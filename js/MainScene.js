@@ -8,10 +8,12 @@ class MainScene extends Phaser.Scene {
 	   this.pipe = null;
 	   this.flapVelocity = 100;
 	   this.tpipe = 4;
-	   this.yrange =  [this.y/2, this.y/10];
+	   this.yrange =  [(this.y/2)-100, this.y/2];
 	   this.xrange = []
 	   if (navigator.userAgent.indexOf("Win") != -1) this.xrange = [this.x/3, this.x/4];
 	   if (navigator.userAgent.indexOf("Android") != -1) this.xrange = [this.x, (this.x/10)*9]
+	   this.scoreP = 0;
+	   this.scoreT = '';
    }
    preload () {
 	   this.load.image('sky', 'img/sky.png');
@@ -31,12 +33,12 @@ class MainScene extends Phaser.Scene {
 		   this.pipeAnime(upipe, lpipe);
 	   }
 	   this.pipe.setVelocityX(-150)
+	   this.physics.add.collider(this.bird, this.pipe, this.stop, null, this);
+	   this.scoreP = 0;
+	   this.scoreT = this.add.text(20, 20, `Score ${this.scoreP}`, {fontSize : '32px', fill : '#000' })
    }	  
    update(time, delta) {
-	   if(this.bird.y >= this.y) {
-		   this.stop();
-	   }
-	   else if(this.bird.y <= 0) {
+	   if(this.bird.getBounds().bottom >= this.y || this.bird.getBounds().top <= 0) {
 		   this.stop();
 	   }
 	   this.recyclePipe();
@@ -60,6 +62,7 @@ class MainScene extends Phaser.Scene {
 			   arr.push(pipe);
 			   if(arr.length == 2) {
 				   this.pipeAnime(...arr);
+				   this.scoreUpdate();
 			   }
 		   }
 	   })
@@ -70,11 +73,23 @@ class MainScene extends Phaser.Scene {
 		   preposition = Math.max(pipe.x, preposition)
 	   })
 	   return preposition;
-   }
+   } 
    stop() {
-	   this.bird.x = this.x/20;
-	   this.bird.y = this.y/2;
-	   this.bird.body.moves=false;
+	   this.physics.pause();
+	   this.bird.setTint(0xAF2204);
+	   this.time.addEvent({
+		   delay: 1000,
+		   callback: () => {
+			   if(confirm(" You Lost \n Restart Game ") == true) {
+				   this.scene.restart();
+			   }
+		   },
+		   loop: false
+	   });
+   }
+   scoreUpdate() {
+	   this.scoreP++;
+	   this.scoreT.setText(`Score ${this.scoreP}`)
    }
 }
 export default MainScene;
