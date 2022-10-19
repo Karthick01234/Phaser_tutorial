@@ -15,17 +15,13 @@ class MainScene extends Phaser.Scene {
 	   this.scoreP = 0;
 	   this.scoreT = '';
    }
-   preload () {
-	   this.load.image('sky', 'img/sky.png');
-	   this.load.image('bird', 'img/bird.png');
-   	   this.load.image('pipe', 'img/pipe.png');
-   }
    create () {
 	   this.img = this.add.image(this.x/2, this.y/2, 'sky');
-	   this.bird = this.physics.add.sprite(this.x/20, this.y/2, 'bird');
+	   this.bird = this.physics.add.sprite(this.x/20, this.y/2, 'bird').setFlipX(true).setScale(3).setOrigin(0);
+	   this.bird.setBodySize(this.bird.width, this.bird.height-8);
 	   this.bird.body.gravity.y = 150;
 	   this.input.on("pointerdown", this.jump, this);
-	   this.input.keyboard.on("keydown_SPACE", this.jump, this);
+	   this.input.keyboard.on("keydown-SPACE", this.jump, this);
 	   this.pipe = this.physics.add.group();
 	   for(var i=0;i<this.tpipe;i++) {
 		   const upipe = this.pipe.create(0, 0, 'pipe').setOrigin(0,1);
@@ -35,7 +31,20 @@ class MainScene extends Phaser.Scene {
 	   this.pipe.setVelocityX(-150)
 	   this.physics.add.collider(this.bird, this.pipe, this.stop, null, this);
 	   this.scoreP = 0;
-	   this.scoreT = this.add.text(20, 20, `Score ${this.scoreP}`, {fontSize : '32px', fill : '#000' })
+	   this.scoreT = this.add.text(20, 20, `Score : ${this.scoreP}`, {fontSize : '32px', fill : '#000' })
+	   this.add.text(20, 55, `Best Score : ${localStorage.getItem("scoreH")}`, {fontSize : '18px', fill : '#000' })
+	   const pause = this.add.image(this.x-20, this.y-20, 'pause').setScale(3).setInteractive().setOrigin(1);
+	   pause.on("pointerdown", () => {
+		   this.physics.pause();
+		   this.scene.pause();
+	   })
+	   this.anims.create({
+		   key: 'fly',
+		   frames: this.anims.generateFrameNumbers('bird', { start: 8, end: 15}),
+		   frameRate: 8, // since we have 8 frames we set 8 framerate it plays 8 frame per second if we set 4 it take 2 seconds to complete animation
+		   repeat: -1 // repeat infinitely
+    })
+    this.bird.play('fly');
    }	  
    update(time, delta) {
 	   if(this.bird.getBounds().bottom >= this.y || this.bird.getBounds().top <= 0) {
@@ -77,7 +86,10 @@ class MainScene extends Phaser.Scene {
    stop() {
 	   this.physics.pause();
 	   this.bird.setTint(0xAF2204);
-	   this.time.addEvent({
+	   if(this.scoreP > localStorage.getItem("scoreH")) {
+		   localStorage.setItem("scoreH", this.scoreP);
+	   }
+	   /*this.time.addEvent({
 		   delay: 1000,
 		   callback: () => {
 			   if(confirm(" You Lost \n Restart Game ") == true) {
@@ -85,11 +97,11 @@ class MainScene extends Phaser.Scene {
 			   }
 		   },
 		   loop: false
-	   });
+	   }); */
    }
    scoreUpdate() {
 	   this.scoreP++;
-	   this.scoreT.setText(`Score ${this.scoreP}`)
+	   this.scoreT.setText(`Score : ${this.scoreP}`)
    }
 }
 export default MainScene;
