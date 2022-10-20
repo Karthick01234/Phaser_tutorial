@@ -20,6 +20,7 @@ class MainScene extends Phaser.Scene {
 	   this.bird = this.physics.add.sprite(this.x/20, this.y/2, 'bird').setFlipX(true).setScale(3).setOrigin(0);
 	   this.bird.setBodySize(this.bird.width, this.bird.height-8);
 	   this.bird.body.gravity.y = 150;
+	   this.bird.setCollideWorldBounds(true);
 	   this.input.on("pointerdown", this.jump, this);
 	   this.input.keyboard.on("keydown-SPACE", this.jump, this);
 	   this.pipe = this.physics.add.group();
