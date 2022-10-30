@@ -17,8 +17,10 @@ class MainScene extends Phaser.Scene {
    }
    create () {
 	   this.img = this.add.image(this.x/2, this.y/2, 'sky');
-	   this.bird = this.physics.add.sprite(this.x/20, this.y/2, 'bird').setFlipX(true).setScale(3).setOrigin(0);
-	   this.bird.setBodySize(this.bird.width, this.bird.height-8);
+	   this.bird = this.physics.add.sprite(this.x/20, this.y/2, 'bird').setOrigin(0.5, 0.5);
+	   console.log(this.bird.width);
+	   console.log(this.bird.height);
+	   this.bird.setBodySize(this.bird.width-10, this.bird.height-40);
 	   this.bird.body.gravity.y = 150;
 	   this.bird.setCollideWorldBounds(true);
 	   this.input.on("pointerdown", this.jump, this);
@@ -41,8 +43,8 @@ class MainScene extends Phaser.Scene {
 	   })
 	   this.anims.create({
 		   key: 'fly',
-		   frames: this.anims.generateFrameNumbers('bird', { start: 8, end: 15}),
-		   frameRate: 8, // since we have 8 frames we set 8 framerate it plays 8 frame per second if we set 4 it take 2 seconds to complete animation
+		   frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 8}),
+		   frameRate: 9, // since we have 9 frames we set 8 framerate it plays 9 frame per second if we set 4 it take 2 seconds to complete animation
 		   repeat: -1 // repeat infinitely
     })
     this.bird.play('fly');
@@ -87,6 +89,7 @@ class MainScene extends Phaser.Scene {
    stop() {
 	   this.physics.pause();
 	   this.bird.setTint(0xAF2204);
+	   this.bird.stop();
 	   if(this.scoreP > localStorage.getItem("scoreH")) {
 		   localStorage.setItem("scoreH", this.scoreP);
 	   }

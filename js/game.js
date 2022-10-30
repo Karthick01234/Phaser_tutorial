@@ -12,7 +12,7 @@ const config = {
 	width: x,
 	height: y,
 	physics: {
-		default: 'arcade'
+		default: 'arcade',
 	},
 	scene: [new PreloadAssests(), new MenuScene(), new MainScene()]
 };

@@ -4,7 +4,7 @@
 	}
 	preload() {
 		this.load.image('sky', 'img/sky.png');
-		this.load.spritesheet('bird', 'img/birdSprite.png', { frameWidth: 16, frameHeight: 16 });
+		this.load.spritesheet('bird', 'img/parrot.png', { frameWidth: 64, frameHeight: 64 });
 		this.load.image('pipe', 'img/pipe.png');
 		this.load.image('pause', 'img/pause.png');
 	}
